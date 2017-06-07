@@ -14,3 +14,4 @@ deck.on(RODIN.CONST.READY, () => {
 });
 
 RODIN.Scene.add(screen);
+//vahe test
