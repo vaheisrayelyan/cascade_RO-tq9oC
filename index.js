@@ -9,12 +9,12 @@ RODIN.start();
 var textureScene1 = RODIN.Loader.loadTexture('images/scene1.jpg');
 var textureScene2 = RODIN.Loader.loadTexture('images/scene2.jpg');
 var textureScene3 = RODIN.Loader.loadTexture('images/scene3.jpg');
-
+responsiveVoice.speak('Baarev aziz, vonts es?', "US English Male", {rate: 1});
 
 const exp360 = new RODIN.Sculpt();
 RODIN.Scene.add(exp360);
 
-const sceneMain = new RODIN.Sphere(72, 36, 36,
+const sceneMain = new RODIN.Sphere(72, 720, 4,
     new THREE.MeshBasicMaterial({
         map: textureScene1,
         side: THREE.DoubleSide
@@ -41,9 +41,58 @@ var hotspot4 = new RODIN.Plane(10, 5.555, new THREE.MeshBasicMaterial({
         transparent: true
 }));
 
+var kitten = new RODIN.Plane(28.8, 20.2464, new THREE.MeshBasicMaterial({
+    map: RODIN.Loader.loadTexture("images/old_abo.png"),
+        transparent: true,
+        opacity : 1.0
+}));
+
 hotspot1.position.set(24, -10, 24);
 hotspot1.rotation.x = -Math.PI / 2;
 hotspot1.rotation.z = -Math.PI / 1.4;
+
+let kittenHolder = new RODIN.Sculpt();
+exp360.add(kittenHolder);
+kittenHolder.add(kitten);
+kittenHolder.rotation.y= Math.PI/2.2;
+kitten.position.set(0, 5.6, -31);
+
+
+
+let hoverAnimation = new RODIN.AnimationClip("hoverAnimation", {
+    _threeObject: {
+        material: {
+            opacity: {from: 1.0, to: 0}
+        }
+    }
+});
+let hoverOutAnimation = new RODIN.AnimationClip("hoverOutAnimation", {
+    _threeObject: {
+        material: {
+            opacity: {from: 0, to: 1.0}
+        }
+    }
+});
+
+hoverAnimation.duration(1000);
+hoverOutAnimation.duration(1000);
+
+
+kitten.animation.add(hoverAnimation,hoverOutAnimation);
+
+kitten.on(RODIN.CONST.GAMEPAD_HOVER, function () {
+    if (kitten.animation.isPlaying('hoverAnimation')) {
+        kitten.animation.stop('hoverAnimation', false);
+    }
+    kitten.animation.start('hoverAnimation');
+});
+
+kitten.on(RODIN.CONST.GAMEPAD_HOVER_OUT, function () {
+    if (kitten.animation.isPlaying('hoverOutAnimation')) {
+        kitten.animation.stop('hoverOutAnimation', false);
+    }
+    kitten.animation.start('hoverOutAnimation');
+});
 
 hotspot2.position.set(-30, -10, -12);
 hotspot2.rotation.x = -Math.PI / 2;
@@ -115,6 +164,7 @@ function changeEnv(texture, rot_angle) {
     
 sceneMain.scale.set(-1,1,1);
 exp360.add(hotspot1);
+//exp360.add(kitten);
 
 hotspot1.on(RODIN.CONST.GAMEPAD_BUTTON_DOWN, function (evt) {
     //exp360.remove(hotspot1);
@@ -135,5 +185,6 @@ hotspot4.on(RODIN.CONST.GAMEPAD_BUTTON_DOWN, function (evt) {
     //exp360.remove(hotspot1);
     changeEnv(textureScene2, -Math.PI / 1.5);
 });
+
 
 exp360.add(sceneMain);

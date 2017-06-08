@@ -1,7 +1,7 @@
-System.register(['rodin/core', './Character.js', './Screen.js', './initialPositions.js'], function (_export, _context) {
+System.register(['rodin/core', './Character.js', './Screen.js', './initialPositions.js', '../index.js'], function (_export, _context) {
     "use strict";
 
-    var RODIN, Character, screen, initialPositions;
+    var RODIN, Character, screen, initialPositions, changeEnvPublic;
     return {
         setters: [function (_rodinCore) {
             RODIN = _rodinCore;
@@ -11,6 +11,8 @@ System.register(['rodin/core', './Character.js', './Screen.js', './initialPositi
             screen = _ScreenJs.screen;
         }, function (_initialPositionsJs) {
             initialPositions = _initialPositionsJs.initialPositions;
+        }, function (_indexJs) {
+            changeEnvPublic = _indexJs.default;
         }],
         execute: function () {
 
@@ -215,11 +217,26 @@ System.register(['rodin/core', './Character.js', './Screen.js', './initialPositi
                 }
             });
 
+            function changeEnvSocket(texture, rot_angle) {
+                if (SS.Socket) {
+                    SS.setData({ texture360: texture, rotation360: rot_angle });
+                    SS.broadcastToAll('changeEnvGlobal', { texture360: texture, rotation360: rot_angle, socketId: SS.Socket.id });
+                }
+            }
+
+            _export('default', changeEnvSocket);
+
             /**
              * Shows a new slide on the screen.
              */
             SS.onMessage('changeMainPicture', data => {
                 if (data.socketId != SS.Socket.id) screen.show(data.imageIndex);
+            });
+
+            SS.onMessage('changeEnvGlobal', data => {
+                if (data.socketId != SS.Socket.id) {
+                    changeEnvPublic(data.texture360, data.rotation360);
+                }
             });
         }
     };
