@@ -15,7 +15,7 @@
     'rodin/physics': { main: 'index.js', defaultExtension: 'js' },
   };
 
-  var moduleNames = [
+    var moduleNames = [
         'core/error',
         'core/time',
         'core/scene',
@@ -41,7 +41,7 @@
         'core/camera',
         'core/avatar',
         'core/math'
-  ];
+    ];
 
   function packIndex(moduleName) {
     packages['' + paths['npm:'] + moduleName + ''] = { main: 'index.js', defaultExtension: 'js' };

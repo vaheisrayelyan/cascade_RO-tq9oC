@@ -217,10 +217,10 @@ System.register(['rodin/core', './Character.js', './Screen.js', './initialPositi
                 }
             });
 
-            function changeEnvSocket(texture, rot_angle) {
+            function changeEnvSocket(num) {
                 if (SS.Socket) {
-                    SS.setData({ texture360: texture, rotation360: rot_angle });
-                    SS.broadcastToAll('changeEnvGlobal', { texture360: texture, rotation360: rot_angle, socketId: SS.Socket.id });
+                    SS.setData({ num_soc: num });
+                    SS.broadcastToAll('changeEnvGlobal', { num_soc: num, socketId: SS.Socket.id });
                 }
             }
 
@@ -235,7 +235,7 @@ System.register(['rodin/core', './Character.js', './Screen.js', './initialPositi
 
             SS.onMessage('changeEnvGlobal', data => {
                 if (data.socketId != SS.Socket.id) {
-                    changeEnvPublic(data.texture360, data.rotation360);
+                    changeEnvPublic(data.num_soc);
                 }
             });
         }
